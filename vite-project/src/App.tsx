@@ -17,17 +17,17 @@ function App() {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  // 🔁 Caching reference for page data
+  //  reference for page data
   const cacheRef = useRef<Map<number, Post[]>>(new Map());
 
-  // 🔁 Ref for aborting fetch requests
+  //  Ref for aborting fetch requests
   const abortController = useRef<AbortController | null>(null);
 
   useEffect(() => {
     async function fetchPosts() {
       setIsLoading(true);
 
-      // ✅ Check cache first
+      // checkin cache first
       if (cacheRef.current.has(page)) {
         setPosts(cacheRef.current.get(page)!);
         setIsLoading(false);
@@ -35,7 +35,7 @@ function App() {
       }
 
       // Else fetch from API
-      abortController.current?.abort(); // abort previous request if any
+      abortController.current?.abort(); 
       abortController.current = new AbortController();
 
       try {
@@ -47,7 +47,7 @@ function App() {
 
         const data: Post[] = await response.json();
 
-        // 🧠 Slice only the current page's posts
+        // only the current page's posts
         const total = data.length;
         setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
 
@@ -56,7 +56,7 @@ function App() {
           page * ITEMS_PER_PAGE
         );
 
-        // 💾 Cache the current page's slice
+        // cache the current page's slice
         cacheRef.current.set(page, sliced);
 
         setPosts(sliced);
